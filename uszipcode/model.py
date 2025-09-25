@@ -1,18 +1,16 @@
-# -*- coding: utf-8 -*-
-
-import json
 import enum
-import typing
+import json
 from functools import total_ordering
-from pathlib_mate import Path
+
 import sqlalchemy as sa
 import sqlalchemy.orm as orm
 import sqlalchemy_mate as sam
 import sqlalchemy_mate.api
+from haversine import Unit, haversine
+
 from .state_abbr import (
     MAPPER_STATE_ABBR_SHORT_TO_LONG,
 )
-from haversine import haversine, Unit
 
 Base = orm.declarative_base()
 
@@ -21,6 +19,7 @@ class ZipcodeTypeEnum(enum.Enum):
     """
     zipcode type visitor class.
     """
+
     Standard = "STANDARD"
     PO_Box = "PO BOX"
     Unique = "UNIQUE"
@@ -32,6 +31,7 @@ class AbstractSimpleZipcode(Base, sam.api.ExtendedBase):
     """
     Base class for Zipcode.
     """
+
     __abstract__ = True
 
     zipcode = sa.Column(sa.String, primary_key=True)
@@ -66,8 +66,9 @@ class AbstractSimpleZipcode(Base, sam.api.ExtendedBase):
     bounds_north = sa.Column(sa.Float)
     bounds_south = sa.Column(sa.Float)
 
-    _settings_major_attrs = "zipcode,zipcode_type,city,county,state,lat,lng,timezone".split(
-        ",")
+    _settings_major_attrs = (
+        "zipcode,zipcode_type,city,county,state,lat,lng,timezone".split(",")
+    )
 
     @property
     def city(self):
@@ -108,17 +109,16 @@ class AbstractSimpleZipcode(Base, sam.api.ExtendedBase):
         """
         return self.zipcode is not None
 
-    def __lt__(self, other: 'AbstractSimpleZipcode'):
+    def __lt__(self, other: "AbstractSimpleZipcode"):
         """
         For ``>`` comparison operator.
         """
         if (self.zipcode is None) or (other.zipcode is None):
-            raise ValueError(
-                "Empty Zipcode instance doesn't support comparison.")
+            raise ValueError("Empty Zipcode instance doesn't support comparison.")
         else:
             return self.zipcode < other.zipcode
 
-    def __eq__(self, other: 'AbstractSimpleZipcode'):
+    def __eq__(self, other: "AbstractSimpleZipcode"):
         """
         For ``==`` comparison operator.
         """
@@ -170,10 +170,14 @@ class AbstractComprehensiveZipcode(AbstractSimpleZipcode):
     owner_occupied_home_values = sa.Column(sam.types.api.CompressedJSONType)
     rental_properties_by_number_of_rooms = sa.Column(sam.types.api.CompressedJSONType)
 
-    monthly_rent_including_utilities_studio_apt = sa.Column(sam.types.api.CompressedJSONType)
+    monthly_rent_including_utilities_studio_apt = sa.Column(
+        sam.types.api.CompressedJSONType
+    )
     monthly_rent_including_utilities_1_b = sa.Column(sam.types.api.CompressedJSONType)
     monthly_rent_including_utilities_2_b = sa.Column(sam.types.api.CompressedJSONType)
-    monthly_rent_including_utilities_3plus_b = sa.Column(sam.types.api.CompressedJSONType)
+    monthly_rent_including_utilities_3plus_b = sa.Column(
+        sam.types.api.CompressedJSONType
+    )
 
     # Employment, Income, Earnings, and Work
     employment_status = sa.Column(sam.types.api.CompressedJSONType)
@@ -182,28 +186,36 @@ class AbstractComprehensiveZipcode(AbstractSimpleZipcode):
     annual_individual_earnings = sa.Column(sam.types.api.CompressedJSONType)
 
     sources_of_household_income____percent_of_households_receiving_income = sa.Column(
-        sam.types.api.CompressedJSONType)
-    sources_of_household_income____average_income_per_household_by_income_source = sa.Column(
-        sam.types.api.CompressedJSONType)
+        sam.types.api.CompressedJSONType
+    )
+    sources_of_household_income____average_income_per_household_by_income_source = (
+        sa.Column(sam.types.api.CompressedJSONType)
+    )
 
-    household_investment_income____percent_of_households_receiving_investment_income = sa.Column(
-        sam.types.api.CompressedJSONType)
-    household_investment_income____average_income_per_household_by_income_source = sa.Column(
-        sam.types.api.CompressedJSONType)
+    household_investment_income____percent_of_households_receiving_investment_income = (
+        sa.Column(sam.types.api.CompressedJSONType)
+    )
+    household_investment_income____average_income_per_household_by_income_source = (
+        sa.Column(sam.types.api.CompressedJSONType)
+    )
 
-    household_retirement_income____percent_of_households_receiving_retirement_incom = sa.Column(
-        sam.types.api.CompressedJSONType)
-    household_retirement_income____average_income_per_household_by_income_source = sa.Column(
-        sam.types.api.CompressedJSONType)
+    household_retirement_income____percent_of_households_receiving_retirement_incom = (
+        sa.Column(sam.types.api.CompressedJSONType)
+    )
+    household_retirement_income____average_income_per_household_by_income_source = (
+        sa.Column(sam.types.api.CompressedJSONType)
+    )
 
     source_of_earnings = sa.Column(sam.types.api.CompressedJSONType)
     means_of_transportation_to_work_for_workers_16_and_over = sa.Column(
-        sam.types.api.CompressedJSONType)
+        sam.types.api.CompressedJSONType
+    )
     travel_time_to_work_in_minutes = sa.Column(sam.types.api.CompressedJSONType)
 
     # Schools and Education
     educational_attainment_for_population_25_and_over = sa.Column(
-        sam.types.api.CompressedJSONType)
+        sam.types.api.CompressedJSONType
+    )
     school_enrollment_age_3_to_17 = sa.Column(sam.types.api.CompressedJSONType)
 
 

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 State short name and long name mapping.
 """
@@ -62,6 +60,5 @@ MAPPER_STATE_ABBR_SHORT_TO_LONG = {
 }
 
 MAPPER_STATE_ABBR_LONG_TO_SHORT = {
-    long: short
-    for short, long in MAPPER_STATE_ABBR_SHORT_TO_LONG.items()
+    long: short for short, long in MAPPER_STATE_ABBR_SHORT_TO_LONG.items()
 }

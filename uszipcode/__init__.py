@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
-
 """
 Yet the best united state zipcode programming database in Python.
 """
 
-from ._version import __version__
+from ._version import __version__ as __version__  # noqa: F401
 
 __short_description__ = (
     "USA zipcode programmable database, includes "
@@ -19,10 +17,23 @@ __github_username__ = "MacHu-GWU"
 
 try:
     from .search import (
+        SORT_BY_DIST,
+        ComprehensiveZipcode,
         SearchEngine,
-        SimpleZipcode, ComprehensiveZipcode, ZipcodeTypeEnum, SORT_BY_DIST,
+        SimpleZipcode,
+        ZipcodeTypeEnum,
     )
 except ImportError as e:  # pragma: no cover
     print(e)
-except: # pragma: no cover
+except:  # pragma: no cover
     raise
+
+# Explicit re-exports for public API
+__all__ = [
+    "__version__",
+    "SORT_BY_DIST",
+    "ComprehensiveZipcode",
+    "SearchEngine",
+    "SimpleZipcode",
+    "ZipcodeTypeEnum",
+]

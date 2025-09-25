@@ -2,3 +2,5 @@
 twine                                   # make distribution archive
 wheel                                   # make pre-compiled distribution package
 python-Levenshtein
+boto3                                   # AWS SDK (required by sqlalchemy_mate AWS features)
+botocore                                # AWS SDK core (required by sqlalchemy_mate)

@@ -13,48 +13,63 @@ on:
 jobs:
   tests:
     name: "${{ matrix.os }} Python ${{ matrix.python-version }}"
-    runs-on: "${{ matrix.os }}" # for all available VM runtime, see this: https://docs.github.com/en/free-pro-team@latest/actions/reference/specifications-for-github-hosted-runners
-    env: # define environment variables
-      USING_COVERAGE: "3.6,3.7,3.8,3.9,3.10"
+    runs-on: "${{ matrix.os }}"
+    env:
+      USING_COVERAGE: "3.8,3.9,3.10,3.11,3.12"
     strategy:
       matrix:
-#        os: ["ubuntu-latest", "windows-latest"]
-        os: ["ubuntu-latest", ] # for debug only
-#        python-version: ["3.6", "3.7", "3.8", "3.9"]
-        python-version: ["3.10", ] # for debug only
+        os: ["ubuntu-latest", "windows-latest", "macos-latest"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
         exclude:
-          - os: windows-latest # this is a useless exclude rules for demonstration use only
-            python-version: 2.7
+          # Reduce matrix size for faster CI - test fewer combinations on Windows/macOS
+          - os: windows-latest
+            python-version: "3.9"
+          - os: windows-latest
+            python-version: "3.10"
+          - os: macos-latest
+            python-version: "3.9"
+          - os: macos-latest
+            python-version: "3.11"
     steps:
-      - uses: "actions/checkout@v2" # https://github.com/marketplace/actions/checkout
-      - uses: "actions/setup-python@v2" # https://github.com/marketplace/actions/setup-python
+      - uses: "actions/checkout@v4"
+      - uses: "actions/setup-python@v4"
         with:
           python-version: "${{ matrix.python-version }}"
 
-      - if: matrix.os == 'ubuntu-latest' # for condition steps, you should put if at begin, and use single quote for logical expression
-        name: "Install dependencies on MacOS or Linux"
+      # Install uv for faster dependency management
+      - name: "Install uv"
+        uses: "astral-sh/setup-uv@v3"
+
+      # Modern approach with uv (preferred)
+      - name: "Install dependencies with uv"
         run: |
-          set -xe
+          uv sync --dev
+
+      # Fallback to traditional pip if uv fails
+      - if: failure()
+        name: "Fallback: Install with pip"
+        run: |
           python -VV
-          python -m site
-          python -m pip install --upgrade pip setuptools wheel virtualenv codecov
+          python -m pip install --upgrade pip setuptools wheel codecov
           pip install -r requirements.txt
           pip install -r requirements-test.txt
-          pip install .
-      - if: matrix.os == 'windows-latest'
-        name: "Install dependencies on Windows"
-        run: |
-          python -m site
-          python -m pip install --upgrade pip setuptools wheel virtualenv codecov
-          pip install -r requirements.txt
-          pip install -r requirements-test.txt
-          pip install .
-      - name: "Run pytest"
-        run: "python -m pytest tests --cov=uszipcode"
+          pip install -r requirements-dev.txt
+          pip install -e .
+
+      - name: "Run tests with coverage"
+        run: "uv run pytest tests --cov=uszipcode --cov-report=xml"
+
+      - name: "Run linting with ruff"
+        run: "uv run ruff check uszipcode/"
+
+      - name: "Check formatting with ruff"
+        run: "uv run ruff format uszipcode/ --check"
 
       - name: "Upload coverage to Codecov"
-        if: "contains(env.USING_COVERAGE, matrix.python-version)"
-        uses: "codecov/codecov-action@v1" # https://github.com/marketplace/actions/codecov-action
+        if: "contains(env.USING_COVERAGE, matrix.python-version) && matrix.os == 'ubuntu-latest'"
+        uses: "codecov/codecov-action@v4"
         with:
+          file: ./coverage.xml
           fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
 

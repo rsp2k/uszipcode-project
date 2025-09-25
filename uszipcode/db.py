@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 The dataset for ``uszipcode`` is from multiple source, and integrated by Sanhe Hu.
 
@@ -11,10 +9,9 @@ The dataset for ``uszipcode`` is from multiple source, and integrated by Sanhe H
 """
 
 import requests
+from atomicwrites import atomic_write
 from pathlib_mate import Path
 from pathlib_mate.helper import repr_data_size
-from atomicwrites import atomic_write
-import sqlalchemy_mate as sam
 
 SIMPLE_DB_FILE_DOWNLOAD_URL = "https://github.com/MacHu-GWU/uszipcode-project/releases/download/1.0.1.db/simple_db.sqlite"
 COMPREHENSIVE_DB_FILE_DOWNLOAD_URL = "https://github.com/MacHu-GWU/uszipcode-project/releases/download/1.0.1.db/comprehensive_db.sqlite"
@@ -44,6 +41,6 @@ def download_db_file(
             f.write(chunk)
             downloaded_size += chunk_size
             if downloaded_size >= next_log_threshold:
-                print("  {} downloaded ...".format(repr_data_size(downloaded_size)))
+                print(f"  {repr_data_size(downloaded_size)} downloaded ...")
                 next_log_threshold += progress_size
     print("  Complete!")

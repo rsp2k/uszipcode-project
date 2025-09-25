@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from uszipcode.search import SearchEngine
 
 
@@ -35,7 +33,7 @@ def assert_descending_by(zipcode_list, attr):
     assert_descending([getattr(z, attr) for z in zipcode_list])
 
 
-class SearchEngineBaseTest(object):
+class SearchEngineBaseTest:
     search: SearchEngine = None
 
     @classmethod
