@@ -38,6 +38,9 @@ The `SearchEngine` class supports multiple query patterns:
 # Initialize project and install all dependencies
 uv sync --dev
 
+# Install with performance optimizations (faster fuzzy matching)
+uv sync --extra performance
+
 # Run tests with coverage
 uv run pytest tests --cov=uszipcode
 

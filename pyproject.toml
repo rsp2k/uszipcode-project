@@ -57,11 +57,14 @@ dev = [
     "botocore",
     "twine",
     "wheel",
-    "python-Levenshtein",
+    "python-Levenshtein>=0.25.1",
     "ruff>=0.1.0",
 ]
 docs = [
     # Add documentation dependencies here when needed
+]
+performance = [
+    "python-Levenshtein>=0.25.1",
 ]
 
 [project.urls]
