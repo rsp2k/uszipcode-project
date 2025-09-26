@@ -38,9 +38,6 @@ The `SearchEngine` class supports multiple query patterns:
 # Initialize project and install all dependencies
 uv sync --dev
 
-# Install with performance optimizations (faster fuzzy matching)
-uv sync --extra performance
-
 # Run tests with coverage
 uv run pytest tests --cov=uszipcode
 
@@ -99,6 +96,7 @@ The SearchEngine automatically handles database downloads, but for manual manage
 - **SQLAlchemy 2.0+**: Core ORM and database operations
 - **sqlalchemy_mate**: Extended SQLAlchemy utilities and compressed JSON types
 - **fuzzywuzzy**: Fuzzy string matching for city names
+- **python-Levenshtein**: C-accelerated string matching (70-100x faster than pure Python)
 - **haversine**: Distance calculations between coordinates
 - **requests**: HTTP client for database downloads
 - **pathlib_mate**: Enhanced path operations

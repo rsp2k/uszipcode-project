@@ -38,6 +38,7 @@ dependencies = [
     "pathlib_mate",
     "atomicwrites",
     "fuzzywuzzy",
+    "python-Levenshtein>=0.25.1",  # Provides 70-100x faster fuzzy matching
     "haversine>=2.5.0",
     "SQLAlchemy>=2.0.30",
     "sqlalchemy_mate>=2.0.0.1",
@@ -62,9 +63,6 @@ dev = [
 ]
 docs = [
     # Add documentation dependencies here when needed
-]
-performance = [
-    "python-Levenshtein>=0.25.1",
 ]
 
 [project.urls]
